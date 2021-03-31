@@ -4,6 +4,7 @@
 #include <pngwriter.h>
 #include <zlib.h>
 #include <zconf.h>
+#include <fstream>
 
 #include "renderer.h"
 #include "version.h"
@@ -12,6 +13,7 @@
 #include "misc.h"
 
 using namespace std::chrono;
+using namespace std;
 
 std::string export_sort_method_render = "none";
 bool export_as_ssrspeed = false;
@@ -285,6 +287,32 @@ void loadDefaultColor(std::string type)
 
 std::string exportRender(std::string resultpath, std::vector<nodeInfo> &nodes, bool export_with_maxSpeed, std::string export_sort_method, std::string export_color_style, bool export_as_new_style, bool export_nat_type)
 {
+    {
+        string txtname = replace_all_distinct(resultpath, ".log", ".txt");
+        ofstream fout;
+        fout.open (txtname);
+        for (int i = 0; i < nodes.size(); i++) {
+            fout 
+                << nodes[i].linkType << "," 
+                << nodes[i].id << "," 
+                << nodes[i].groupID << "," 
+                << nodes[i].online << "," 
+                << nodes[i].group << "," 
+                << nodes[i].remarks << "," 
+                << nodes[i].server << "," 
+                << nodes[i].duration << "," 
+                << nodes[i].pkLoss << "," 
+                << nodes[i].avgPing << ","
+                << nodes[i].sitePing << ","
+                << nodes[i].avgSpeed << ","
+                << nodes[i].maxSpeed << ","
+                << nodes[i].ulSpeed << "," 
+                << nodes[i].traffic << ","
+                << nodes[i].natType.get() << endl;
+        }
+        fout.close();
+    }
+    
     std::string pngname = replace_all_distinct(resultpath, ".log", ".png");
     nodeInfo node;
     int total_width = 0, total_height = 0, node_count = 0, total_line = 0;
